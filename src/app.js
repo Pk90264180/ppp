@@ -205,7 +205,8 @@ app.post('/register', async (req, res) => {
           .status(200)
           .send('Registration successful. Referral bonus added.');
       } else {
-        return res.status(200).send('Registration successful.');
+        res.header('Access-Control-Allow-Origin', 'https://hpc.onrender.com');
+        res.status(200).send('registration OK');
       }
     } else {
       return res.status(400).send('Error registering user.');
