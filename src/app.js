@@ -21,11 +21,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: 'https://hpc.onrender.com',
-  })
-);
+// app.use(cors());
+const corsOptions = {
+  origin: 'https://hpc.onrender.com',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.get('/alerts', async (req, res) => {
   try {
