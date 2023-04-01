@@ -22,22 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
+app.use(cors());
 
-const server = require('http').Server(app);
-const io = require('socket.io')(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['my-custom-header'],
-    credentials: true,
-  },
-});
 app.get('/alerts', async (req, res) => {
   try {
     const alerts = await Alert.find();
@@ -88,56 +74,6 @@ app.post('/logoutall', async (req, res) => {
     console.log(err);
   }
 });
-
-// app.post('/register', async (req, res) => {
-//   try {
-//     const password = req.body.password;
-//     const cpassword = req.body.confirmpassword;
-
-//     if (password === cpassword) {
-//       // retrieve all existing documents from the Register model
-//       const users = await Register.find({});
-
-//       // check if referral code matches an existing document's YourReferralId
-//       const existingDoc = users.find(
-//         (doc) => doc.YourReferralId === req.body.referral
-//       );
-
-//       // set the amount field to 25 if referral code matches an existing document
-//       const amount = existingDoc ? 25 : 0;
-
-//       const registerEmployee = new Register({
-//         firstname: req.body.firstname,
-//         lastname: req.body.lastname,
-//         email: req.body.email,
-//         phone: req.body.phone,
-//         referral: req.body.referral,
-//         amount: amount,
-//         password: req.body.password,
-//         confirmpassword: req.body.confirmpassword,
-//         agree: req.body.agree,
-//       });
-
-//       // password hashing
-
-//       const token = await registerEmployee.generateAuthToken();
-
-//       res.cookie('jwt', token, {
-//         expires: new Date(Date.now() + 30000000),
-//         httpOnly: true,
-//       });
-
-//       const registered = await registerEmployee.save();
-//       // console.log(registerEmployee)
-//       res.status(200).send('registration successful');
-//     } else {
-//       res.send('passwords are not mathching');
-//     }
-//   } catch (error) {
-//     res.status(400).send(error);
-//     console.log(error);
-//   }
-// });
 
 app.post('/register', async (req, res) => {
   try {
@@ -210,78 +146,6 @@ app.post('/register', async (req, res) => {
     console.log(error);
   }
 });
-
-// app.post('/register', async (req, res) => {
-//   try {
-//     const password = req.body.password;
-//     const cpassword = req.body.confirmpassword;
-
-//     if (password === cpassword) {
-//       const referralId = req.body.referral;
-
-//       // Check if there's a user with the given referral ID
-//       const referredUser = await Register.findOne({
-//         YourReferralId: referralId,
-//       }).exec();
-
-//       if (referredUser) {
-//         // If a user with the referral ID is found, update their YourReferrals field by 1
-//         referredUser.YourReferrals += 1;
-//         await referredUser.save();
-
-//         // Set the amount to 25
-//         const registerEmployee = new Register({
-//           firstname: req.body.firstname,
-//           lastname: req.body.lastname,
-//           email: req.body.email,
-//           phone: req.body.phone,
-//           referral: req.body.referral,
-//           amount: 0,
-//           password: req.body.password,
-//           confirmpassword: req.body.confirmpassword,
-//           tandc: req.body.tandc,
-//         });
-//         // password hashing
-//         const token = await registerEmployee.generateAuthToken();
-//         res.cookie('jwt', token, {
-//           expires: new Date(Date.now() + 30000000),
-//           httpOnly: true,
-//         });
-
-//         const registered = await registerEmployee.save();
-//         res.status(200).send('registration successful');
-//       } else {
-//         // If no user is found with the referral ID, set the amount to 0
-//         const registerEmployee = new Register({
-//           firstname: req.body.firstname,
-//           lastname: req.body.lastname,
-//           email: req.body.email,
-//           phone: req.body.phone,
-//           referral: req.body.referral,
-//           amount: 0,
-//           password: req.body.password,
-//           confirmpassword: req.body.confirmpassword,
-//           tandc: req.body.tandc,
-//         });
-
-//         // password hashing
-//         const token = await registerEmployee.generateAuthToken();
-//         res.cookie('jwt', token, {
-//           expires: new Date(Date.now() + 30000000),
-//           httpOnly: true,
-//         });
-
-//         const registered = await registerEmployee.save();
-//         res.status(200).send('registration successful');
-//       }
-//     } else {
-//       res.send('passwords are not matching');
-//     }
-//   } catch (error) {
-//     res.status(400).send(error);
-//     console.log(error);
-//   }
-// });
 
 app.post('/login', async (req, res) => {
   try {
@@ -505,6 +369,6 @@ app.patch('/time', async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`connection is setup at "http://localhost:${PORT}"`);
 });
