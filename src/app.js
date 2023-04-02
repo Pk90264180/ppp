@@ -4,6 +4,8 @@ const http = require('http');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const PORT = process.env.PORT || 9000;
+const api = 'http://hpc.onrender.com';
+// const api = 'http://localhost:3000';
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -23,7 +25,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cors());
 const corsOptions = {
-  origin: 'https://hpc.onrender.com',
+  origin: api,
   credentials: true,
 };
 
@@ -176,8 +178,6 @@ app.post('/register', async (req, res) => {
     if (referredUser) {
       // If a user with the referral ID is found, set the amount to 25 and update their YourReferrals field by 1
       amount = 25;
-      referredUser.YourReferrals += 1;
-      await referredUser.save();
     }
 
     const registerEmployee = new Register({
@@ -203,11 +203,13 @@ app.post('/register', async (req, res) => {
 
     if (registered) {
       if (amount > 0) {
+        referredUser.YourReferrals += 1;
+        await referredUser.save();
         return res
           .status(200)
           .send('Registration successful. Referral bonus added.');
       } else {
-        res.header('Access-Control-Allow-Origin', 'https://hpc.onrender.com');
+        res.header('Access-Control-Allow-Origin', api);
         res.status(200).send('registration OK');
       }
     } else {
